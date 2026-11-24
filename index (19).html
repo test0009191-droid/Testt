@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c0d10">
+<title>Together</title>
+<style>
+:root{--bg:#0c0d10;--card:#1a1b20;--line:#2b2c33;--red:#c0102a;--deep:#6e0f1d;--tx:#f4f4f6;--mu:#9a9ba3}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--tx);font:16px/1.45 Roboto,system-ui,sans-serif;min-height:100dvh}
+[hidden]{display:none!important}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px calc(24px + env(safe-area-inset-bottom))}
+.logo{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;font-weight:800;background:linear-gradient(135deg,var(--deep),var(--red));box-shadow:0 6px 18px #c0102a40}
+.hero{background:linear-gradient(145deg,#2a1b20,#130a0d);border:1px solid var(--line);border-radius:30px;padding:26px 22px;margin-top:18px}
+h1{font-size:34px;line-height:1.1;letter-spacing:-.02em;margin-bottom:10px}
+.sub{color:var(--mu);margin-bottom:22px}
+.btn{display:block;width:100%;border:0;border-radius:20px;padding:17px;font-size:17px;font-weight:600;cursor:pointer;background:linear-gradient(110deg,#1e1e25 0%,var(--deep) 45%,var(--red));box-shadow:0 10px 26px #c0102a30;transition:transform .12s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--card);border:1px solid var(--line);box-shadow:none}
+.or{color:var(--mu);text-align:center;margin:18px 0 12px;font-size:14px}
+input{width:100%;background:#130c0f;border:1px solid var(--line);border-radius:18px;padding:15px 18px;outline:0}
+input:focus,.btn:focus-visible,.nav button:focus-visible{border-color:var(--red);outline:2px solid #c0102a80}
+.row{display:flex;gap:10px;margin-top:10px}.row input{flex:1}.row .btn{width:auto;padding:0 22px}
+#room{display:flex;flex-direction:column;height:100dvh;position:relative}
+header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);padding-top:calc(12px + env(safe-area-inset-top))}
+header .logo{width:40px;height:40px;border-radius:13px;font-size:14px}
+header b{display:block;font-size:17px;line-height:1.15}
+.pill{font-size:13px;color:var(--mu)}.pill::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e8a317;margin-right:6px}
+.pill.ok::before{background:#2ecc71}
+header .sp{flex:1}
+header .btn{width:auto;padding:10px 16px;font-size:14px;border-radius:14px}
+main{flex:1;overflow:auto;padding:16px}
+.pane{display:none}.pane.on{display:block}
+.stage{aspect-ratio:16/9;background:#000;border-radius:22px;overflow:hidden;border:1px solid var(--line);display:grid;place-items:center;color:var(--mu);text-align:center;padding:12px}
+.stage video,.stage iframe,.stage #yt{width:100%;height:100%;border:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:16px;margin-top:14px}
+.tip{color:var(--mu);font-size:14px;margin-top:12px}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:0;padding:11px;border-radius:14px;color:var(--mu);font-weight:600;cursor:pointer}
+.seg button.on{background:linear-gradient(110deg,var(--deep),var(--red));color:#fff}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px auto;max-width:340px}
+.cell{aspect-ratio:1;border:1px solid var(--line);background:var(--card);border-radius:20px;font-size:44px;font-weight:700;cursor:pointer;display:grid;place-items:center;transition:transform .1s}
+.cell:active{transform:scale(.94)}
+.cell.X{color:#fff}.cell.O{color:#ff4a62}
+.cell.t{background:linear-gradient(135deg,var(--deep),var(--red));border:0;color:#fff}
+.cell.e{background:0;border-style:dashed;cursor:default}
+.st{text-align:center;font-weight:600;min-height:26px}
+#log{height:calc(100dvh - 300px);min-height:180px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-bottom:8px}
+.m{max-width:80%;padding:10px 14px;border-radius:18px;background:var(--card);border:1px solid var(--line);word-break:break-word}
+.m.me{align-self:flex-end;background:linear-gradient(110deg,var(--deep),var(--red));border:0}
+.empty{color:var(--mu);text-align:center;margin:auto}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#121317}
+.nav button{border:0;background:0;border-radius:18px;padding:8px 0;color:var(--mu);font-size:13px;cursor:pointer;position:relative}
+.nav button span{display:block;font-size:22px}
+.nav button.on{background:#3a141b;color:#ff4a62}
+.dot{position:absolute;top:6px;right:22%;width:10px;height:10px;border-radius:50%;background:var(--red)}
+#pip{position:absolute;top:70px;right:12px;width:92px;height:124px;border-radius:18px;overflow:hidden;border:2px solid var(--red);background:#000;z-index:5;box-shadow:0 8px 24px #000a}
+#pip video{width:100%;height:100%;object-fit:cover}
+#me{position:absolute;bottom:4px;left:4px;width:34px;height:46px;border-radius:8px;border:1px solid #fff5}
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#222;border:1px solid var(--red);padding:10px 18px;border-radius:16px;z-index:9;max-width:88%;text-align:center}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes glow{50%{box-shadow:0 6px 30px #c0102a99}}
+@keyframes fl{to{transform:translateY(-240px) scale(1.5);opacity:0}}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+.hero{animation:up .6s both}.logo{animation:glow 2.8s infinite}
+.pane.on{animation:up .35s both}
+.cell.X,.cell.O{animation:pop .25s}.m{animation:pop .2s}
+.rx{display:flex;justify-content:space-around;margin-top:12px}
+.rx button{border:1px solid var(--line);background:var(--card);border-radius:50%;width:52px;height:52px;font-size:24px;cursor:pointer;transition:transform .12s}
+.rx button:active{transform:scale(.8)}
+.fl{position:fixed;bottom:110px;font-size:34px;animation:fl 2s ease-out forwards;pointer-events:none;z-index:8}
+.cf{position:fixed;top:-20px;width:10px;height:14px;animation:fall 2.4s linear forwards;z-index:9;pointer-events:none}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.mc{aspect-ratio:1;border:0;border-radius:16px;font-size:30px;cursor:pointer;background:linear-gradient(135deg,var(--deep),var(--red));transition:transform .4s}
+.mc.up{background:var(--card);border:1px solid var(--line);transform:rotateY(360deg)}
+.mc.ok{background:#3a141b;opacity:.6;transform:scale(.92)}
+canvas{width:100%;aspect-ratio:1;background:#130c0f;border:1px solid var(--line);border-radius:22px;touch-action:none}
+.sw{display:flex;gap:12px;justify-content:center;margin:14px 0}.sw i{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer}.sw i.on{border-color:#fff}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="home" class="wrap">
+  <div class="logo">TG</div>
+  <div class="hero">
+    <h1>Watch, play and talk together</h1>
+    <p class="sub">Make a room, send the code, and enjoy videos and games in sync, wherever you are.</p>
+    <button class="btn" id="create">+ Create a room</button>
+    <p class="or">Already have a code?</p>
+    <div class="row"><input id="code" placeholder="Enter room code" maxlength="5" autocapitalize="characters" autocomplete="off"><button class="btn" id="join">Join</button></div>
+  </div>
+  <p class="tip">Free and private. Video, voice and games go straight between your two phones.</p>
+</div>
+
+<div id="room" hidden>
+  <header>
+    <div class="logo">TG</div>
+    <div><b>Room <span id="rc"></span></b><span class="pill" id="st">Waiting for partner</span></div>
+    <div class="sp"></div>
+    <button class="btn" id="share">Invite</button>
+  </header>
+  <div id="pip" hidden><video id="rv" autoplay playsinline></video><video id="me" autoplay playsinline muted></video></div>
+  <main>
+    <section class="pane on" id="p-watch">
+      <div class="stage" id="stage">Paste a YouTube or video link below to start watching</div>
+      <div class="row"><input id="url" placeholder="Paste a video link" inputmode="url"><button class="btn" id="load">Play</button></div>
+      <div class="rx"><button>❤</button><button>😂</button><button>😮</button><button>👏</button><button>🔥</button></div>
+      <p class="tip">Tap a reaction to send it floating to your partner. Play, pause and skip are shared. Works with YouTube and direct video files (.mp4, .webm).</p>
+    </section>
+    <section class="pane" id="p-games">
+      <div class="seg"><button class="on" data-g="ttt">Tic-tac-toe</button><button data-g="pz">Puzzle</button><button data-g="mem">Memory</button><button data-g="dr">Draw</button></div>
+      <div id="g-ttt"><div class="board" id="tb"></div><p class="st" id="ts"></p><button class="btn ghost" id="tr">New game</button></div>
+      <div id="g-pz" hidden><div class="board" id="pb"></div><p class="st" id="ps">Put the numbers in order, together.</p><button class="btn ghost" id="pr">Shuffle</button></div>
+      <div id="g-mem" hidden><div class="mg" id="mb"></div><p class="st" id="ms"></p><button class="btn ghost" id="mr">New game</button></div>
+      <div id="g-dr" hidden><div class="sw" id="sw"></div><canvas id="cv" width="600" height="600"></canvas><button class="btn ghost" id="dc" style="margin-top:12px">Clear board</button></div>
+    </section>
+    <section class="pane" id="p-chat">
+      <div id="log"><p class="empty">Say hi to your partner</p></div>
+      <div class="row"><input id="msg" placeholder="Type a message" autocomplete="off"><button class="btn" id="send">Send</button></div>
+    </section>
+    <section class="pane" id="p-call">
+      <div class="card"><b>Voice and video call</b><p class="tip">Your partner appears in the small window on every screen. Use headphones to avoid echo.</p>
+        <div class="ctl"><button class="btn" id="call">Start call</button><button class="btn ghost" id="end">End call</button><button class="btn ghost" id="mic">Mute mic</button><button class="btn ghost" id="cam">Camera off</button></div></div>
+    </section>
+  </main>
+  <nav class="nav">
+    <button class="on" data-t="watch"><span>▶</span>Watch</button>
+    <button data-t="games"><span>🎮</span>Games</button>
+    <button data-t="chat"><span>💬</span>Chat<i class="dot" id="dot" hidden></i></button>
+    <button data-t="call"><span>📞</span>Call</button>
+  </nav>
+</div>
+<div id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let peer,conn,host,stream,cur='',yt,vid,lock=false,tab='watch',mediaCall;
+const mk=()=>Math.random().toString(36).slice(2,7).toUpperCase();
+const send=o=>conn&&conn.open&&conn.send(o);
+function toast(t){const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(toast.i);toast.i=setTimeout(()=>e.hidden=true,3000)}
+
+// Connect
+function start(isHost,c){
+  host=isHost;peer=new Peer(isHost?'tgx-'+c:undefined,{config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'},{urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'}]}});
+  peer.on('open',()=>{$('#home').hidden=true;$('#room').hidden=false;$('#rc').textContent=c;
+    if(!isHost){conn=peer.connect('tgx-'+c,{reliable:true});wire(conn);setTimeout(()=>{if(!conn.open)toast('Room not found. Check the code and try again.')},8000)}});
+  peer.on('connection',x=>{conn=x;wire(x)});
+  peer.on('call',cl=>{navigator.mediaDevices.getUserMedia({audio:true,video:true}).catch(()=>null).then(s=>{stream=s;if(s)$('#me').srcObject=s;cl.answer(s||undefined);gotCall(cl)})});
+  peer.on('error',e=>{if(e.type==='unavailable-id'){peer.destroy();start(true,mk())}else if(e.type==='peer-unavailable')toast('Room not found. Check the code and try again.');else toast('Connection problem. Please try again.')});
+}
+function wire(c){
+  c.on('open',()=>{$('#st').textContent='Connected';$('#st').classList.add('ok');toast('Connected!');
+    if(host){if(cur)send({t:'load',url:cur});send({t:'ttt',b:tt.b,turn:tt.turn});send({t:'pz',p:pz});send({t:'mem',s:mem})}});
+  c.on('data',onData);
+  c.on('close',()=>{$('#st').textContent='Partner left';$('#st').classList.remove('ok');$('#pip').hidden=true});
+}
+function onData(d){
+  if(d.t==='load'){$('#url').value=d.url;loadVideo(d.url,true)}
+  else if(d.t==='play'||d.t==='pause'||d.t==='seek')apply(d.t,d.time);
+  else if(d.t==='chat')addMsg(d.m,false);
+  else if(d.t==='ttt'){tt.b=d.b;tt.turn=d.turn;drawT()}
+  else if(d.t==='pz'){pz=d.p;drawP()}else if(d.t==='rx')float(d.e);else if(d.t==='mem'){mem=d.s;drawM()}else if(d.t==='dr')stroke(d);else if(d.t==='clr')clr();
+}
+
+// Video
+function loadVideo(u,remote){
+  cur=u;const st=$('#stage');st.innerHTML='';yt=vid=null;
+  const m=u.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/);
+  if(m){st.innerHTML='<div id="yt"></div>';
+    const make=()=>yt=new YT.Player('yt',{videoId:m[1],playerVars:{playsinline:1},events:{onStateChange:e=>{
+      if(lock||(e.data!==1&&e.data!==2))return;send({t:e.data===1?'play':'pause',time:yt.getCurrentTime()})}}});
+    window.YT&&YT.Player?make():window.onYouTubeIframeAPIReady=make}
+  else{vid=document.createElement('video');vid.src=u;vid.controls=true;vid.playsInline=true;st.append(vid);
+    vid.onerror=()=>toast('This link can’t be played. Try YouTube or a direct .mp4 link.');
+    ['play','pause','seeked'].forEach(ev=>vid.addEventListener(ev,()=>{if(!lock)send({t:ev==='seeked'?'seek':ev,time:vid.currentTime})}))}
+  if(!remote)send({t:'load',url:u});
+}
+function apply(e,time){
+  lock=true;setTimeout(()=>lock=false,700);
+  if(yt&&yt.seekTo){if(Math.abs(yt.getCurrentTime()-time)>1.5)yt.seekTo(time,true);if(e==='play')yt.playVideo();if(e==='pause')yt.pauseVideo()}
+  else if(vid){if(Math.abs(vid.currentTime-time)>1.5)vid.currentTime=time;if(e==='play')vid.play().catch(()=>toast('Tap the video to start playback'));if(e==='pause')vid.pause()}
+}
+$('#load').onclick=()=>{const u=$('#url').value.trim();if(!u)return toast('Paste a video link first');loadVideo(u,false)};
+
+// Chat
+function addMsg(m,me){
+  const l=$('#log');l.querySelector('.empty')?.remove();
+  const d=document.createElement('div');d.className='m'+(me?' me':'');d.textContent=m;l.append(d);l.scrollTop=l.scrollHeight;
+  if(!me&&tab!=='chat')$('#dot').hidden=false;
+}
+function sendMsg(){const i=$('#msg'),m=i.value.trim();if(!m)return;if(!conn||!conn.open)return toast('Waiting for your partner to join');send({t:'chat',m});addMsg(m,true);i.value=''}
+$('#send').onclick=sendMsg;$('#msg').onkeydown=e=>e.key==='Enter'&&sendMsg();
+
+// Call
+function gotCall(cl){mediaCall=cl;cl.on('stream',r=>{$('#rv').srcObject=r;$('#pip').hidden=false});cl.on('close',()=>$('#pip').hidden=true)}
+$('#call').onclick=async()=>{
+  if(!conn||!conn.open)return toast('Waiting for your partner to join');
+  try{stream=await navigator.mediaDevices.getUserMedia({audio:true,video:true})}catch{return toast('Allow microphone and camera access to call')}
+  $('#me').srcObject=stream;gotCall(peer.call(conn.peer,stream));toast('Calling…');
+};
+$('#end').onclick=()=>{mediaCall&&mediaCall.close();stream&&stream.getTracks().forEach(t=>t.stop());$('#pip').hidden=true};
+function flip(kind,btn,on,off){if(!stream)return toast('Start a call first');const t=kind==='a'?stream.getAudioTracks()[0]:stream.getVideoTracks()[0];if(!t)return;t.enabled=!t.enabled;btn.textContent=t.enabled?on:off}
+$('#mic').onclick=e=>flip('a',e.target,'Mute mic','Unmute mic');
+$('#cam').onclick=e=>flip('v',e.target,'Camera off','Camera on');
+
+// Tic-tac-toe (host = X, partner = O)
+let tt={b:Array(9).fill(''),turn:'X'};
+const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function win(b){for(const l of L)if(b[l[0]]&&b[l[0]]===b[l[1]]&&b[l[0]]===b[l[2]])return l;return null}
+function drawT(){
+  const w=win(tt.b),me=host?'X':'O',B=$('#tb');B.innerHTML='';
+  tt.b.forEach((v,i)=>{const c=document.createElement('button');c.className='cell '+v+(w&&w.includes(i)?' t':'');c.textContent=v;
+    c.onclick=()=>{if(tt.b[i]||w||tt.turn!==me||!conn||!conn.open)return;tt.b[i]=me;tt.turn=me==='X'?'O':'X';drawT();send({t:'ttt',b:tt.b,turn:tt.turn});if(win(tt.b))confetti()};B.append(c)});
+  $('#ts').textContent=w?(tt.b[w[0]]===me?'You won!':'Your partner won'):tt.b.every(Boolean)?'It’s a draw':tt.turn===me?'Your turn ('+me+')':'Partner’s turn…';
+}
+$('#tr').onclick=()=>{tt={b:Array(9).fill(''),turn:'X'};drawT();send({t:'ttt',b:tt.b,turn:'X'})};
+
+// Slide puzzle (shared board)
+let pz=[1,2,3,4,5,6,7,8,0];
+function drawP(){
+  const B=$('#pb');B.innerHTML='';
+  pz.forEach((v,i)=>{const c=document.createElement('button');c.className='cell'+(v?' t':' e');c.textContent=v||'';c.style.fontSize='34px';
+    c.onclick=()=>{const z=pz.indexOf(0),r=Math.abs(((i/3)|0)-((z/3)|0)),k=Math.abs(i%3-z%3);
+      if(!v||r+k!==1)return;[pz[i],pz[z]]=[pz[z],pz[i]];drawP();send({t:'pz',p:pz});if(pz.join('')==='123456780')confetti()};B.append(c)});
+  $('#ps').textContent=pz.join('')==='123456780'?'Solved together! ❤':'Put the numbers in order, together.';
+}
+$('#pr').onclick=()=>{pz=[1,2,3,4,5,6,7,8,0];let z=8,prev=-1;
+  for(let n=0;n<120;n++){const o=[];const r=(z/3)|0,k=z%3;
+    if(r>0)o.push(z-3);if(r<2)o.push(z+3);if(k>0)o.push(z-1);if(k<2)o.push(z+1);
+    const f=o.filter(x=>x!==prev),m=f[Math.random()*f.length|0];[pz[z],pz[m]]=[pz[m],pz[z]];prev=z;z=m}
+  drawP();send({t:'pz',p:pz})};
+$$('.seg button').forEach(b=>b.onclick=()=>{$$('.seg button').forEach(x=>x.classList.toggle('on',x===b));['ttt','pz','mem','dr'].forEach(g=>$('#g-'+g).hidden=b.dataset.g!==g)});
+
+// Reactions and confetti
+function float(e){const d=document.createElement('div');d.className='fl';d.textContent=e;d.style.left=(10+Math.random()*75)+'%';document.body.append(d);setTimeout(()=>d.remove(),2000)}
+$$('.rx button').forEach(b=>b.onclick=()=>{float(b.textContent);send({t:'rx',e:b.textContent})});
+function confetti(){for(let i=0;i<45;i++){const d=document.createElement('i');d.className='cf';d.style.left=Math.random()*100+'%';d.style.background=['#c0102a','#ff4a62','#fff','#f5c542'][i%4];d.style.animationDelay=Math.random()*.6+'s';document.body.append(d);setTimeout(()=>d.remove(),3300)}}
+
+// Memory match (shared cards)
+const EM=['❤','🔥','⭐','🌙','🎈','🍕'];
+let mem={o:[],f:[],m:[]};
+function newMem(){mem={o:[...EM,...EM].sort(()=>Math.random()-.5),f:[],m:[]};drawM();send({t:'mem',s:mem})}
+function drawM(){const B=$('#mb');B.innerHTML='';
+  mem.o.forEach((v,i)=>{const c=document.createElement('button'),ok=mem.m.includes(i),up=mem.f.includes(i);
+    c.className='mc'+(ok?' ok':up?' up':'');c.textContent=ok||up?v:'';
+    c.onclick=()=>{if(ok||up||mem.f.length>1||!conn||!conn.open)return;mem.f.push(i);
+      if(mem.f.length===2){const[a,b]=mem.f;
+        if(mem.o[a]===mem.o[b]){mem.m.push(a,b);mem.f=[];if(mem.m.length===12)confetti()}
+        else setTimeout(()=>{mem.f=[];drawM();send({t:'mem',s:mem})},900)}
+      drawM();send({t:'mem',s:mem})};B.append(c)});
+  $('#ms').textContent=!mem.o.length?'Tap New game to deal the cards':mem.m.length===12?'You found them all together! ❤':'Matched '+mem.m.length/2+' of 6'}
+$('#mr').onclick=()=>{if(!conn||!conn.open)return toast('Waiting for your partner to join');newMem()};
+
+// Shared drawing board
+const cv=$('#cv'),cx=cv.getContext('2d');let pc='#ff4a62',pen=null;
+function stroke(d){cx.strokeStyle=d.c;cx.lineWidth=8;cx.lineCap='round';cx.beginPath();cx.moveTo(d.a*600,d.b*600);cx.lineTo(d.x*600,d.y*600);cx.stroke()}
+function clr(){cx.clearRect(0,0,600,600)}
+const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]};
+cv.onpointerdown=e=>{pen=pt(e);cv.setPointerCapture(e.pointerId)};
+cv.onpointermove=e=>{if(!pen)return;const[x,y]=pt(e),d={t:'dr',a:pen[0],b:pen[1],x,y,c:pc};stroke(d);send(d);pen=[x,y]};
+cv.onpointerup=()=>pen=null;
+$('#sw').innerHTML=['#ff4a62','#ffffff','#f5c542','#4ade80','#60a5fa'].map((c,i)=>`<i style="background:${c}" data-c="${c}" class="${i?'':'on'}"></i>`).join('');
+$$('#sw i').forEach(i=>i.onclick=()=>{pc=i.dataset.c;$$('#sw i').forEach(x=>x.classList.toggle('on',x===i))});
+$('#dc').onclick=()=>{clr();send({t:'clr'})};
+
+// Navigation and setup
+$$('.nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;$$('.nav button').forEach(x=>x.classList.toggle('on',x===b));$$('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+tab));if(tab==='chat')$('#dot').hidden=true});
+$('#create').onclick=()=>start(true,mk());
+$('#join').onclick=()=>{const c=$('#code').value.trim().toUpperCase();if(c.length<5)return toast('Enter the 5-letter room code');start(false,c)};
+$('#share').onclick=async()=>{const u=location.origin+location.pathname+'?room='+$('#rc').textContent;
+  try{navigator.share?await navigator.share({title:'Join me on Together',url:u}):(await navigator.clipboard.writeText(u),toast('Invite link copied'))}catch{}};
+const q=new URLSearchParams(location.search).get('room');if(q)$('#code').value=q.toUpperCase().slice(0,5);
+drawT();drawP();drawM();
+</script>
+</body>
+</html>
